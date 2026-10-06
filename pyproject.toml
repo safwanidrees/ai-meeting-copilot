@@ -1,0 +1,75 @@
+[project]
+name = "ai-meeting-copilot"
+version = "0.1.0"
+description = "Listens to meeting audio, transcribes it in real time with Whisper, and streams AI-suggested answers to your terminal."
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Safwan Mamji" }
+]
+requires-python = ">=3.12,<3.14"
+keywords = ["whisper", "meeting", "transcription", "rag", "llm", "copilot", "voice-activity-detection"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "anthropic>=1.11.0",
+    "cohere>=7.2.0",
+    "faster-whisper>=1.2.1",
+    "numpy>=2.4.4",
+    "openai>=3.24.0",
+    "pypdf>=6.10.0",
+    "python-docx>=1.2.0",
+    "python-dotenv>=1.2.2",
+    "qdrant-client>=1.19.1",
+    "rich>=15.0.0",
+    "scipy>=1.18.1",
+    "silero-vad>=6.2.3",
+    "sounddevice>=0.5.6",
+    "soxr>=1.1.0",
+    "torch>=2.6",  # via silero-vad; listed directly so Linux can use the CPU-only build
+]
+
+[project.urls]
+Homepage = "https://github.com/safwanidrees/ai-meeting-copilot"
+Issues = "https://github.com/safwanidrees/ai-meeting-copilot/issues"
+
+[project.scripts]
+copilot = "ai_meeting_copilot.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.11.6,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.15",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["F", "E9", "B", "I"]
+
+# Silero VAD needs PyTorch only on the CPU. On Linux, PyPI's default torch wheel drags in
+# several GB of CUDA libraries, so use the CPU-only build there (macOS/Windows wheels are CPU already).
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
