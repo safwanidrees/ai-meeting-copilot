@@ -117,7 +117,9 @@ def build_retriever(settings: Settings, log: Callable[[str], None], warn: Callab
     embedder: Embedder | None = None
     store: QdrantStore | None = None
     provider = settings.resolve_embedding_provider()
-    if provider is None:
+    if provider is None and (settings.embedding_provider or "").lower() == "none":
+        log("Vector index: off (--embeddings none)")
+    elif provider is None:
         warn("No OpenAI/OpenRouter/Cohere key for embeddings — vector search disabled, using BM25 only.")
     else:
         try:

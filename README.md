@@ -5,16 +5,11 @@ interviews, transcribes it in real time with Whisper, and streams a suggested an
 and the likely follow-up question to your terminal. It can answer from your own documents
 (resume, notes, product docs).
 
-```
-THEY SAID: Can you explain the difference between generative and discriminative models?
+![Demo: a mock interviewer asks two questions; the copilot transcribes them and streams answers grounded in the example notes](docs/demo.gif)
 
-ANSWER: Generative models learn how the data itself is distributed, so they can create
-new samples; GMMs and GANs are examples. Discriminative models such as logistic
-regression or SVMs only learn the boundary between classes...
-
-FOLLOW-UP: Can you describe a real-world case where that choice changed the outcome?
-  transcribe 1.34s · retrieve 0.21s · first token 0.62s · answer 2.10s · sources: ml-notes.md
-```
+<sub>Real run, not a mock-up: an 18-second recorded interviewer, the example notes in
+`examples/interview-prep`, and a free OpenRouter model. Qwen was busy, so OpenRouter fell back
+to Nemotron automatically (`answered by …`). Recorded with [VHS](https://github.com/charmbracelet/vhs): `vhs docs/demo.tape`.</sub>
 
 ## Features
 
@@ -250,6 +245,9 @@ Every option can be set as a CLI flag (`uv run copilot --help`) or an environmen
 uv run ruff check src tests scripts   # lint
 uv run pytest                          # 73 offline tests (fake VAD/LLM; real Qdrant in-memory)
 ```
+
+To re-record the README demo after changing the output: `brew install vhs && vhs docs/demo.tape`
+(needs an LLM key and the demo recording).
 
 CI runs both on Ubuntu and macOS for every push and pull request. See
 [CONTRIBUTING.md](CONTRIBUTING.md).

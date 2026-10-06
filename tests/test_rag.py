@@ -169,3 +169,15 @@ def test_failures_degrade_instead_of_crashing():
     results = retriever.retrieve("Kubernetes migration")
     assert results[0].chunk.id == 1  # BM25 still answered
     assert len(warnings) == 2
+
+
+def test_embeddings_none_is_reported_as_a_choice_not_a_problem(tmp_path, monkeypatch):
+    from ai_meeting_copilot.config import Settings
+    from ai_meeting_copilot.rag import build_retriever
+
+    (tmp_path / "notes.md").write_text("Kubernetes migration notes.")
+    logs, warnings = [], []
+    monkeypatch.setenv("OPENAI_API_KEY", "x")  # a key exists, but the user turned vectors off
+    build_retriever(Settings(context_paths=[tmp_path], embedding_provider="none", rerank=False), logs.append, warnings.append)
+    assert "Vector index: off (--embeddings none)" in logs
+    assert warnings == []
